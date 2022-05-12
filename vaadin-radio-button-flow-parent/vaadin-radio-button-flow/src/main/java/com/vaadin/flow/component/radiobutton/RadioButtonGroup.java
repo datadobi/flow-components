@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -31,11 +31,11 @@ import com.vaadin.flow.component.HasHelper;
 import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValidation;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.radiobutton.dataview.RadioButtonGroupDataView;
 import com.vaadin.flow.component.radiobutton.dataview.RadioButtonGroupListDataView;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.data.binder.HasItemComponents;
 import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -59,19 +59,13 @@ import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.shared.Registration;
 
 /**
- * A single select component using radio buttons as options.
- * <p>
- * This is a server side Java integration for the {@code vaadin-radio-group}
- * element.
- * <p>
- * Usage examples, see
- * <a href="https://vaadin.com/components/vaadin-radio-button/java-examples">the
- * demo in vaadin.com</a>.
+ * Radio Button Group allows the user to select exactly one value from a list of
+ * related but mutually exclusive options.
  *
  * @author Vaadin Ltd.
  */
-@NpmPackage(value = "@vaadin/radio-group", version = "23.0.0-alpha1")
-@NpmPackage(value = "@vaadin/vaadin-radio-button", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/radio-group", version = "23.1.0-beta1")
+@NpmPackage(value = "@vaadin/vaadin-radio-button", version = "23.1.0-beta1")
 public class RadioButtonGroup<T>
         extends GeneratedVaadinRadioGroup<RadioButtonGroup<T>, T>
         implements HasItemComponents<T>, SingleSelect<RadioButtonGroup<T>, T>,
@@ -86,9 +80,10 @@ public class RadioButtonGroup<T>
 
     private SerializablePredicate<T> itemEnabledProvider = item -> isEnabled();
 
-    private ComponentRenderer<? extends Component, T> itemRenderer = new TextRenderer<>();
+    private ItemLabelGenerator<T> itemLabelGenerator = String::valueOf;
 
-    private boolean isReadOnly;
+    private ComponentRenderer<? extends Component, T> itemRenderer = new TextRenderer<>(
+            itemLabelGenerator);
 
     private final PropertyChangeListener validationListener = this::validateSelectionEnabledState;
     private Registration validationRegistration;
@@ -116,11 +111,111 @@ public class RadioButtonGroup<T>
         return radioButtonGroup.keyMapper.key(model);
     }
 
+    /**
+     * Default constructor. Creates an empty radio button group.
+     */
     public RadioButtonGroup() {
         super(null, null, String.class, RadioButtonGroup::presentationToModel,
                 RadioButtonGroup::modelToPresentation, true);
 
         registerValidation();
+    }
+
+    /**
+     * Creates an empty radio button group with the defined label.
+     *
+     * @param label
+     *            the label describing the radio button group
+     * @see #setLabel(String)
+     */
+    public RadioButtonGroup(String label) {
+        this();
+        setLabel(label);
+    }
+
+    /**
+     * Creates a radio button group with the defined label and populated with
+     * the items in the collection.
+     *
+     * @param label
+     *            the label describing the radio button group
+     * @param items
+     *            the items to be shown in the list of the radio button group
+     * @see #setLabel(String)
+     * @see #setItems(Collection)
+     */
+    public RadioButtonGroup(String label, Collection<T> items) {
+        this(label);
+        setItems(items);
+    }
+
+    /**
+     * Creates a radio button group with the defined label and populated with
+     * the items in the array.
+     *
+     * @param label
+     *            the label describing the radio button group
+     * @param items
+     *            the items to be shown in the list of the radio button group
+     * @see #setLabel(String)
+     * @see #setItems(Object...)
+     */
+    @SafeVarargs
+    public RadioButtonGroup(String label, T... items) {
+        this(label);
+        setItems(items);
+    }
+
+    /**
+     * Constructs a radio button group with a value change listener.
+     *
+     * @param listener
+     *            the value change listener to add
+     * @see #addValueChangeListener(ValueChangeListener)
+     */
+    public RadioButtonGroup(
+            ValueChangeListener<ComponentValueChangeEvent<RadioButtonGroup<T>, T>> listener) {
+        this();
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Constructs a radio button group with the defined label and a value change
+     * listener.
+     *
+     * @param label
+     *            the label describing the radio button group
+     * @param listener
+     *            the value change listener to add
+     * @see #setLabel(String)
+     * @see #addValueChangeListener(ValueChangeListener)
+     */
+    public RadioButtonGroup(String label,
+            ValueChangeListener<ComponentValueChangeEvent<RadioButtonGroup<T>, T>> listener) {
+        this(label);
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Constructs a radio button group with the defined label, a value change
+     * listener and populated with the items in the array.
+     *
+     * @param label
+     *            the label describing the radio button group
+     * @param listener
+     *            the value change listener to add
+     * @param items
+     *            the items to be shown in the list of the radio button group
+     * @see #setLabel(String)
+     * @see #addValueChangeListener(ValueChangeListener)
+     * @see #setItems(Object...)
+     */
+    @SafeVarargs
+    public RadioButtonGroup(String label,
+            ValueChangeListener<ComponentValueChangeEvent<RadioButtonGroup<T>, T>> listener,
+            T... items) {
+        this(label, listener);
+        setItems(items);
     }
 
     @Override
@@ -238,11 +333,39 @@ public class RadioButtonGroup<T>
                 });
     }
 
+    /**
+     * Sets the item label generator that is used to produce the strings shown
+     * in the radio button group for each item. By default,
+     * {@link String#valueOf(Object)} is used.
+     * <p>
+     *
+     * @param itemLabelGenerator
+     *            the item label provider to use, not null
+     */
+    public void setItemLabelGenerator(
+            ItemLabelGenerator<T> itemLabelGenerator) {
+        Objects.requireNonNull(itemLabelGenerator,
+                "The item label generator can not be null");
+        this.itemLabelGenerator = itemLabelGenerator;
+        setRenderer(new TextRenderer<>(itemLabelGenerator));
+    }
+
+    /**
+     * Gets the item label generator that is used to produce the strings shown
+     * in the radio button group for each item.
+     *
+     * @return the item label generator used, not null
+     */
+    public ItemLabelGenerator<T> getItemLabelGenerator() {
+        return itemLabelGenerator;
+    }
+
     @Override
     public void setValue(T value) {
         super.setValue(value);
         getRadioButtons().forEach(
                 rb -> rb.setChecked(Objects.equals(rb.getItem(), value)));
+        refreshButtons();
     }
 
     @Override
@@ -331,26 +454,19 @@ public class RadioButtonGroup<T>
 
     @Override
     public void onEnabledStateChanged(boolean enabled) {
-        if (isReadOnly()) {
-            setDisabled(true);
-        } else {
-            setDisabled(!enabled);
-        }
+        setDisabled(!enabled);
         refreshButtons();
     }
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        isReadOnly = readOnly;
-        if (isEnabled()) {
-            setDisabled(readOnly);
-            refreshButtons();
-        }
+        super.setReadonly(readOnly);
+        refreshButtons();
     }
 
     @Override
     public boolean isReadOnly() {
-        return isReadOnly;
+        return super.isReadonlyBoolean();
     }
 
     /**
@@ -427,16 +543,20 @@ public class RadioButtonGroup<T>
 
     @SuppressWarnings("unchecked")
     private void reset() {
-        // Cache helper component before removal
-        Component helperComponent = getHelperComponent();
         keyMapper.removeAll();
-        removeAll();
         clear();
 
-        // reinsert helper component
-        setHelperComponent(helperComponent);
-
         synchronized (dataProvider) {
+            // Cache helper component before removal
+            Component helperComponent = getHelperComponent();
+
+            // Remove all known children (doesn't remove client-side-only
+            // children such as the label)
+            getChildren().forEach(this::remove);
+
+            // reinsert helper component
+            setHelperComponent(helperComponent);
+
             final AtomicInteger itemCounter = new AtomicInteger(0);
             getDataProvider().fetch(DataViewUtils.getQuery(this))
                     .map(item -> createRadioButton((T) item))
@@ -571,17 +691,19 @@ public class RadioButtonGroup<T>
     private void updateEnabled(RadioButton<T> button) {
         boolean disabled = isDisabledBoolean()
                 || !getItemEnabledProvider().test(button.getItem());
-        button.setEnabled(!disabled);
-        Serializable rawValue = button.getElement().getPropertyRaw("disabled");
-        if (rawValue instanceof Boolean) {
-            // convert the boolean value to a String to force update the
-            // property value. Otherwise since the provided value is the same as
-            // the current one the update don't do anything.
-            button.getElement().setProperty("disabled",
-                    disabled ? Boolean.TRUE.toString() : null);
-        } else {
-            button.setDisabled(disabled);
+
+        if (this.isReadOnly() && !button.isCheckedBoolean()) {
+            // Mark non-checked radio buttons in a readonly group as disabled.
+            disabled = true;
         }
+
+        button.setEnabled(!disabled);
+        button.setDisabled(disabled);
+        // When enabling a disabled radio group, individual button Web
+        // Components that should remain disabled (due to itemEnabledProvider),
+        // may end up rendering as enabled.
+        // Enforce the Web Component state using JS.
+        button.getElement().executeJs("this.disabled = $0", disabled);
     }
 
     private T getValue(Serializable key) {

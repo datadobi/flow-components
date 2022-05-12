@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -44,7 +44,7 @@ public class ColumnAutoWidthIT extends AbstractComponentIT {
     /**
      * Converts a CSS pixel value string to an integer. Assumes that the given
      * string is a CSS value in pixels (e.g. "100px").
-     * 
+     *
      * @param cssValue
      *            Css pixel value (e.g. "100px")
      * @return Number of pixels as an integer
@@ -56,7 +56,7 @@ public class ColumnAutoWidthIT extends AbstractComponentIT {
     /**
      * Assert that the given CSS pixel value is close to the expected value
      * (with a margin of ±<code>delta</code>)
-     * 
+     *
      * @param expected
      *            expected value
      * @param cssValue

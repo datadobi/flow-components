@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -81,7 +81,7 @@ public class TabsElement extends TestBenchElement {
      *
      * @param text
      *            the text to look for in the tabs
-     * @return the index of tthe first tab element which matches the given text
+     * @return the index of the first tab element which matches the given text
      *         or -1 if no match was found
      */
     public int getTab(String text) {

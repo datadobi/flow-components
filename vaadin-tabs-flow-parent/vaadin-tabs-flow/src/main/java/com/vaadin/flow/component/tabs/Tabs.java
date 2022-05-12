@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,7 +32,10 @@ import com.vaadin.flow.component.Synchronize;
 import com.vaadin.flow.shared.Registration;
 
 /**
- * Server-side component for the {@code vaadin-tabs} element.
+ * Tabs are used to organize and group content into sections that the user can
+ * navigate between. Use Tabs when you want to allow in-place navigation within
+ * a certain part of the UI, instead of showing everything at once or forcing
+ * the user to navigate between different views.
  * <p>
  * {@link Tab} components can be added to this component with the
  * {@link #add(Tab...)} method or the {@link #Tabs(Tab...)} constructor. The Tab
@@ -406,7 +409,7 @@ public class Tabs extends GeneratedVaadinTabs<Tabs>
      */
     public void setOrientation(Orientation orientation) {
         getElement().setProperty("orientation",
-                orientation.name().toLowerCase());
+                orientation.name().toLowerCase(Locale.ENGLISH));
     }
 
     /**

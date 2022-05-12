@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -86,7 +86,7 @@ public class CellFocusEvent<T> extends ComponentEvent<Grid<T>> {
 
     /**
      * Returns the grid section, where this cell is located. Never null.
-     * 
+     *
      * @return section
      */
     public GridSection getSection() {
@@ -141,7 +141,7 @@ public class CellFocusEvent<T> extends ComponentEvent<Grid<T>> {
         /**
          * Returns the matching {@link GridSection} for the given client side
          * name. An unknown client side name will lead to an exception.
-         * 
+         *
          * @param clientSideName
          *            client side name to lookup
          * @throws IllegalArgumentException
@@ -163,7 +163,7 @@ public class CellFocusEvent<T> extends ComponentEvent<Grid<T>> {
 
         /**
          * Returns the client side name of the section.
-         * 
+         *
          * @return client side name
          */
         public String getClientSideName() {

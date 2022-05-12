@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -51,7 +51,7 @@ public class PasswordFieldElement extends TestBenchElement
      *
      * @param passwordVisible
      *            <code>true</code> to show the password in clear text,
-     *            <code>false</code> to hide the passwors from view
+     *            <code>false</code> to hide the password from view
      */
     public void setPasswordVisible(boolean passwordVisible) {
         callFunction("_setPasswordVisible", passwordVisible);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,7 +24,7 @@ import com.vaadin.flow.dom.Element;
 /**
  * Helper methods for wrapping {@code <vaadin-grid-column>} elements inside
  * {@code <vaadin-grid-column-group>} elements.
- * 
+ *
  * @author Vaadin Ltd
  *
  */
@@ -33,7 +33,7 @@ class ColumnGroupHelpers {
     /**
      * Wraps each of the given columns inside a column group and places those
      * wrapper groups in the original columns' places.
-     * 
+     *
      * @param cols
      *            the columns to wrap
      * @param grid
@@ -49,7 +49,7 @@ class ColumnGroupHelpers {
     /**
      * Wraps the given columns inside a column group and places this wrapper on
      * the first wrapped column's place.
-     * 
+     *
      * @param grid
      *            the grid that has the columns
      * @param columns
@@ -68,7 +68,7 @@ class ColumnGroupHelpers {
     /**
      * Wraps the given columns inside a column group and places this wrapper on
      * the first wrapped column's place.
-     * 
+     *
      * @param grid
      *            the grid that has the columns
      * @param columns
@@ -84,7 +84,7 @@ class ColumnGroupHelpers {
     /**
      * Wraps the given column inside a column group and places this wrapper
      * group to the original column's place.
-     * 
+     *
      * @param column
      *            the column to wrap
      * @param grid

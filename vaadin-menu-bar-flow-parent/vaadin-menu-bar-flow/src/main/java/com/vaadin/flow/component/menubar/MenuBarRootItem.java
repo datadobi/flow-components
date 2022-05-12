@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,24 +33,6 @@ class MenuBarRootItem extends MenuItem {
             throw new UnsupportedOperationException(
                     "A root level item in a MenuBar can not be checkable");
         }
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        if (enabled == isEnabled()) {
-            return;
-        }
-        super.setEnabled(enabled);
-        menuBar.updateButtons();
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        if (visible == isVisible()) {
-            return;
-        }
-        super.setVisible(visible);
-        menuBar.resetContent();
     }
 
     /**

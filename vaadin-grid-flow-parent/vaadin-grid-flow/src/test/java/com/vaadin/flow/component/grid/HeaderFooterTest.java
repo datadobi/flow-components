@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -704,7 +704,7 @@ public class HeaderFooterTest {
      * Grid. The order is from in-most to out-most. So the first layer consists
      * of the vaadin-grid-column elements, and the second layer consists of
      * vaadin-grid-column-group elements that are their parents, and so on.
-     * 
+     *
      * @see ColumnLayer
      */
     private List<List<Element>> getColumnLayers() {

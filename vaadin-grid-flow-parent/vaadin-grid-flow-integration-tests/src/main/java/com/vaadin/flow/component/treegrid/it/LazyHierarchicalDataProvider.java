@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,6 +17,7 @@ package com.vaadin.flow.component.treegrid.it;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -79,6 +80,16 @@ public class LazyHierarchicalDataProvider extends
             list.add(new HierarchicalTestBean(parentKey.orElse(null), depth,
                     i + query.getOffset()));
         }
+
+        query.getSortingComparator().ifPresent(sorting -> {
+            list.sort(sorting);
+        });
         return list.stream();
+    }
+
+    @Override
+    public Object getId(HierarchicalTestBean item) {
+        Objects.requireNonNull(item, "Cannot provide an id for a null item.");
+        return item.getId();
     }
 }

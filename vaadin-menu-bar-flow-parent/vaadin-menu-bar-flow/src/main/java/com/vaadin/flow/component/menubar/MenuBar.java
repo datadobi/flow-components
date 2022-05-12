@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,6 +25,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.HasTheme;
@@ -44,19 +45,20 @@ import elemental.json.JsonObject;
 import elemental.json.JsonType;
 
 /**
- * Server-side component for the <code>vaadin-menu-bar</code> element.
+ * Menu Bar is a horizontal button bar with hierarchical drop-down menus. Menu
+ * items can either trigger an action, open a menu, or work as a toggle.
  *
  * @author Vaadin Ltd
  */
 @Tag("vaadin-menu-bar")
-@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.1.0-beta1")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
 @JsModule("./menubarConnector.js")
 @JsModule("@vaadin/menu-bar/src/vaadin-menu-bar.js")
-@NpmPackage(value = "@vaadin/menu-bar", version = "23.0.0-alpha1")
-@NpmPackage(value = "@vaadin/vaadin-menu-bar", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/menu-bar", version = "23.1.0-beta1")
+@NpmPackage(value = "@vaadin/vaadin-menu-bar", version = "23.1.0-beta1")
 public class MenuBar extends Component
-        implements HasMenuItems, HasSize, HasStyle, HasTheme {
+        implements HasMenuItems, HasSize, HasStyle, HasTheme, HasEnabled {
 
     private MenuManager<MenuBar, MenuItem, SubMenu> menuManager;
     private MenuItemsArrayGenerator<MenuItem> menuItemsArrayGenerator;
@@ -76,7 +78,8 @@ public class MenuBar extends Component
                 (menu, contentReset) -> new MenuBarRootItem(this, contentReset),
                 MenuItem.class, null);
         addAttachListener(event -> {
-            initConnector();
+            String appId = event.getUI().getInternals().getAppId();
+            initConnector(appId);
             resetContent();
         });
     }
@@ -340,15 +343,20 @@ public class MenuBar extends Component
             return;
         }
         runBeforeClientResponse(ui -> {
-            getElement().executeJs("this.$connector.updateButtons()");
+            // When calling `generateItems` without providing a node id, it will
+            // use the previously generated items tree, only updating the
+            // disabled and hidden properties of the root items = the menu bar
+            // buttons.
+            getElement().executeJs("this.$connector.generateItems()");
             updateScheduled = false;
         });
         updateScheduled = true;
     }
 
-    private void initConnector() {
+    private void initConnector(String appId) {
         getElement().executeJs(
-                "window.Vaadin.Flow.menubarConnector.initLazy(this)");
+                "window.Vaadin.Flow.menubarConnector.initLazy(this, $0)",
+                appId);
     }
 
     private void runBeforeClientResponse(SerializableConsumer<UI> command) {

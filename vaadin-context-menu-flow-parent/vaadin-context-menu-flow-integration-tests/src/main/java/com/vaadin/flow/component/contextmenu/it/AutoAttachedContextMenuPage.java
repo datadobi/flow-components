@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,7 +27,7 @@ import com.vaadin.flow.router.Route;
  * Needs to be in its own view to make sure that the frontend dependencies are
  * loaded for the target component even if there are no ContextMenu components
  * attached yet to the page.
- * 
+ *
  * @author Vaadin Ltd.
  */
 @Route("vaadin-context-menu/auto-attached-context-menu")

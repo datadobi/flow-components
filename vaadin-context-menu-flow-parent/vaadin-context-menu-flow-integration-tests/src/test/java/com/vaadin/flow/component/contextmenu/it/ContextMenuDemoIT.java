@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,21 +19,28 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
-import com.vaadin.flow.component.contextmenu.demo.ContextMenuView;
-import com.vaadin.tests.ComponentDemoTest;
+import com.vaadin.tests.AbstractComponentIT;
+import com.vaadin.flow.testutil.TestPath;
 import com.vaadin.testbench.TestBenchElement;
 
 /**
  * Integration tests for the {@link ContextMenuView}.
  */
-public class ContextMenuDemoIT extends ComponentDemoTest {
+@TestPath("vaadin-context-menu")
+public class ContextMenuDemoIT extends AbstractComponentIT {
 
     private static final String OVERLAY_TAG = "vaadin-context-menu-overlay";
+
+    @Before
+    public void init() {
+        open();
+    }
 
     @Test
     public void openAndCloseBasicContextMenu_contentIsRendered() {
@@ -203,10 +210,5 @@ public class ContextMenuDemoIT extends ComponentDemoTest {
         executeScript(
                 "arguments[0].dispatchEvent(new Event('mouseover', {bubbles:true}))",
                 parentItem);
-    }
-
-    @Override
-    protected String getTestPath() {
-        return "/vaadin-context-menu";
     }
 }

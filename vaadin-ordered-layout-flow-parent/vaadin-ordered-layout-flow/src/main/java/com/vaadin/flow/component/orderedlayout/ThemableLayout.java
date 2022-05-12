@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -123,7 +123,7 @@ public interface ThemableLayout extends HasElement {
 
     /**
      * Sets the {@code box-sizing} CSS property of the layout.
-     * 
+     *
      * @param boxSizing
      *            the box-sizing of the layout. <code>null</code> is interpreted
      *            as {@link BoxSizing#UNDEFINED}
@@ -148,7 +148,7 @@ public interface ThemableLayout extends HasElement {
     /**
      * Gets the box-sizing defined for the layout, or
      * {@link BoxSizing#UNDEFINED} if none was defined on the server-side.
-     * 
+     *
      * @return the box-sizing, never <code>null</code>
      * @see BoxSizing
      */

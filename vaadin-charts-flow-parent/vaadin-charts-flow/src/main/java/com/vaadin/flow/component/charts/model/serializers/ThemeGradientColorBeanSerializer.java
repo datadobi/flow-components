@@ -4,11 +4,11 @@ package com.vaadin.flow.component.charts.model.serializers;
  * #%L
  * Vaadin Charts
  * %%
- * Copyright (C) 2014 - 2020 Vaadin Ltd
+ * Copyright 2000-2022 Vaadin Ltd.
  * %%
  * This program is available under Commercial Vaadin Developer License
  * 4.0 (CVDLv4).
- * 
+ *
  * For the full License, see <https://vaadin.com/license/cvdl-4.0>.
  * #L%
  */
@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.BeanAsArraySerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
@@ -63,6 +64,12 @@ public class ThemeGradientColorBeanSerializer extends BeanSerializerBase {
     }
 
     @Override
+    protected BeanSerializerBase withByNameInclusion(Set<String> set,
+            Set<String> set1) {
+        throw new IllegalArgumentException("Method has not been implemented.");
+    }
+
+    @Override
     protected BeanSerializerBase withIgnorals(String[] toIgnore) {
         return new ThemeGradientColorBeanSerializer(this, toIgnore);
     }
@@ -70,6 +77,13 @@ public class ThemeGradientColorBeanSerializer extends BeanSerializerBase {
     @Override
     public BeanSerializerBase withFilterId(Object filterId) {
         return new ThemeGradientColorBeanSerializer(this, filterId);
+    }
+
+    @Override
+    protected BeanSerializerBase withProperties(
+            BeanPropertyWriter[] beanPropertyWriters,
+            BeanPropertyWriter[] beanPropertyWriters1) {
+        throw new IllegalArgumentException("Method has not been implemented.");
     }
 
     @Override

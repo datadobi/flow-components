@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,6 +37,8 @@ import com.vaadin.tests.AbstractComponentIT;
 import static org.junit.Assert.assertTrue;
 
 import com.vaadin.flow.testutil.TestPath;
+
+import java.time.Duration;
 
 /**
  * Integration tests for changing the ValueChangeMode of TextField, TextArea and
@@ -211,12 +213,14 @@ public class ValueChangeModeIT extends AbstractComponentIT {
     }
 
     private void waitUntilMessageUpdated() {
-        waitUntilMessageUpdated(2000,
-                "It took more than 2000ms to change the message, probably CI performance problems");
+        waitUntilMessageUpdated(2,
+                "It took more than 2s to change the message, probably CI performance problems");
     }
 
-    private void waitUntilMessageUpdated(long timeout, String failMessage) {
-        new WebDriverWait(getDriver(), timeout).withMessage(failMessage)
+    private void waitUntilMessageUpdated(long timeoutInSeconds,
+            String failMessage) {
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeoutInSeconds))
+                .withMessage(failMessage)
                 .until(webDriver -> isMessageUpdated());
     }
 }

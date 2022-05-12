@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,7 +24,9 @@ import java.util.Locale;
 import com.vaadin.flow.function.SerializableFunction;
 
 /**
- * Server-side component for the {@code vaadin-number-field} element.
+ * Number Field sports many of the same features as Text Field but only accepts
+ * numeric input. The input can be decimal, integral or big decimal. You can
+ * specify a unit as a prefix or suffix for the field.
  *
  * @author Vaadin Ltd.
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,10 +16,10 @@
 package com.vaadin.flow.component.grid.it;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.flow.testutil.TestPath;
+import com.vaadin.testbench.TestBenchElement;
 
 @TestPath("vaadin-grid/grid-with-full-size-in-template")
 public class GridFullSizeInATemplateIT extends GridSizeIT {
@@ -27,10 +27,8 @@ public class GridFullSizeInATemplateIT extends GridSizeIT {
     @Test
     public void gridOccupies100PercentOfThePage() {
         open();
-        WebElement gridInATemplate = findElement(
-                By.tagName("grid-in-a-template"));
-        WebElement grid = findInShadowRoot(gridInATemplate, By.id("grid"))
-                .get(0);
+        TestBenchElement gridInATemplate = $("grid-in-a-template").first();
+        WebElement grid = gridInATemplate.$("*").id("grid");
         assertGridOccupies100PercentOfThePage(grid);
     }
 

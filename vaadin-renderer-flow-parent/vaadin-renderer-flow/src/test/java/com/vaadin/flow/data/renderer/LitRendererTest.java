@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,6 +17,7 @@ package com.vaadin.flow.data.renderer;
 
 import com.vaadin.flow.component.UI;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,6 +58,18 @@ public class LitRendererTest {
     public void allowAlphaNumericFunctionNames() {
         LitRenderer.of("<div></div>").withFunction("legalName1", item -> {
         });
+    }
+
+    @Test
+    public void supportGettingValueProviders() {
+        LitRenderer<?> renderer = LitRenderer.of("<div></div>")
+                .withProperty("foo", item -> 1).withProperty("bar", item -> 2);
+
+        Assert.assertTrue(
+                renderer.getValueProviders().keySet().contains("foo"));
+        Assert.assertTrue(
+                renderer.getValueProviders().keySet().contains("bar"));
+        Assert.assertTrue(renderer.getValueProviders().size() == 2);
     }
 
 }

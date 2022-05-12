@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,13 +16,13 @@
 package com.vaadin.flow.component.splitlayout.tests;
 
 import com.vaadin.flow.component.html.testbench.DivElement;
+import com.vaadin.flow.component.splitlayout.test.SplitLayoutView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.flow.component.html.testbench.NativeButtonElement;
 import com.vaadin.flow.component.html.testbench.SpanElement;
-import com.vaadin.flow.component.splitlayout.demo.SplitLayoutView;
 import com.vaadin.flow.component.splitlayout.test.SplitterPositionView;
 import com.vaadin.flow.component.splitlayout.testbench.SplitLayoutElement;
 import com.vaadin.tests.AbstractComponentIT;

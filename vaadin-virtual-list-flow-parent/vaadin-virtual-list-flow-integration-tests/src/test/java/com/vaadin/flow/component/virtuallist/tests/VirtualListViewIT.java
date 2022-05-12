@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -121,7 +121,7 @@ public class VirtualListViewIT extends AbstractComponentIT {
 
     @Test
     public void rankedListWithEventHandling() {
-        validateListSize(findElement(By.id("using-events-with-templates")), 29);
+        validateListSize(findElement(By.id("using-events-with-templates")), 20);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -40,7 +40,7 @@ public class StepsUtil {
     /**
      * Converts a Duration object into a decimal value that is used internally
      * by the time picker web component.
-     * 
+     *
      * @param duration
      * @return
      */
@@ -64,7 +64,7 @@ public class StepsUtil {
     /**
      * Converts the decimal steps value use internally by the time picker web
      * component into a Duration instance
-     * 
+     *
      * @param stepsValue
      * @return
      */

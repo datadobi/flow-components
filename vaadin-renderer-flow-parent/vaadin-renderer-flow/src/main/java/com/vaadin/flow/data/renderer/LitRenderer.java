@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -447,5 +447,16 @@ public class LitRenderer<SOURCE> extends Renderer<SOURCE> {
         }
         clientCallables.put(functionName, handler);
         return this;
+    }
+
+    /**
+     * Gets the property mapped to {@link ValueProvider}s in this renderer. The
+     * returned map is immutable.
+     *
+     * @return the mapped properties, never <code>null</code>
+     */
+    @Override
+    public Map<String, ValueProvider<SOURCE, ?>> getValueProviders() {
+        return Collections.unmodifiableMap(valueProviders);
     }
 }

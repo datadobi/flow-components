@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,21 +25,27 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.flow.component.datepicker.testbench.DatePickerElement;
-import com.vaadin.tests.ComponentDemoTest;
+import com.vaadin.flow.testutil.TestPath;
+import com.vaadin.tests.AbstractComponentIT;
 import com.vaadin.testbench.TestBenchElement;
+import com.vaadin.testbench.TestBenchTestCase;
 
 import static org.junit.Assert.assertTrue;
 
 /**
  * Integration tests for the {@link DatePickerViewDemoPage}.
  */
-public class DatePickerIT extends ComponentDemoTest {
+@TestPath("vaadin-date-picker-test-demo")
+public class DatePickerIT extends AbstractComponentIT {
 
     private static final String DATEPICKER_OVERLAY = "vaadin-date-picker-overlay";
+    private TestBenchTestCase layout;
 
     @Before
     public void init() {
+        open();
         waitForElementPresent(By.tagName("vaadin-date-picker"));
+        layout = this;
     }
 
     @Test
@@ -108,12 +114,10 @@ public class DatePickerIT extends ComponentDemoTest {
         executeScript("arguments[0].setAttribute(\"opened\", true)", picker);
         waitForElementPresent(By.tagName(DATEPICKER_OVERLAY));
 
-        WebElement overlay = findElement(By.tagName(DATEPICKER_OVERLAY));
-        WebElement content = findInShadowRoot(overlay, By.id("content")).get(0);
-        WebElement overlayContent = findInShadowRoot(content,
-                By.id("overlay-content")).get(0);
-        WebElement todayButton = findInShadowRoot(overlayContent,
-                By.id("todayButton")).get(0);
+        TestBenchElement overlay = $(DATEPICKER_OVERLAY).first();
+        TestBenchElement content = overlay.$("*").id("content");
+        TestBenchElement overlayContent = content.$("*").id("overlay-content");
+        WebElement todayButton = overlayContent.$("*").id("todayButton");
 
         waitUntil(driver -> "tänään".equals(todayButton.getText()));
     }
@@ -312,10 +316,5 @@ public class DatePickerIT extends ComponentDemoTest {
 
         $("button").id("Locale-US").click();
         Assert.assertEquals("3/8/20", localePicker.getInputValue());
-    }
-
-    @Override
-    protected String getTestPath() {
-        return ("/vaadin-date-picker-test-demo");
     }
 }

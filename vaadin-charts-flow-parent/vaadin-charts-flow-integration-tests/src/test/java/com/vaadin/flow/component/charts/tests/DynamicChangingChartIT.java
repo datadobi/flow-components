@@ -4,8 +4,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.vaadin.flow.component.charts.demo.AbstractChartExample;
-import com.vaadin.flow.component.charts.demo.examples.other.DynamicChangingChart;
+import com.vaadin.flow.component.charts.examples.AbstractChartExample;
+import com.vaadin.flow.component.charts.examples.other.DynamicChangingChart;
 import com.vaadin.flow.component.charts.testbench.ChartElement;
 
 public class DynamicChangingChartIT extends AbstractTBTest {
@@ -15,7 +15,6 @@ public class DynamicChangingChartIT extends AbstractTBTest {
     }
 
     @Test
-
     public void setConfiguration_changes_chart() {
         ChartElement chart = getChartElement();
         findElement(By.id("set_funnel_button")).click();
@@ -27,8 +26,8 @@ public class DynamicChangingChartIT extends AbstractTBTest {
     }
 
     private void assertTitle(ChartElement chart, String expectedTitle) {
-        WebElement title = getElementFromShadowRoot(chart,
-                By.className("highcharts-title"));
+        WebElement title = chart.$("*")
+                .attributeContains("class", "highcharts-title").first();
         waitUntil(e -> expectedTitle.equals(title.getText()), 2);
     }
 }

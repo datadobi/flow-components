@@ -4,7 +4,7 @@ package com.vaadin.flow.component.crud.testbench;
  * #%L
  * Vaadin Crud Testbench API
  * %%
- * Copyright (C) 2018 - 2020 Vaadin Ltd
+ * Copyright 2000-2022 Vaadin Ltd.
  * %%
  * This program is available under Commercial Vaadin Developer License
  * 4.0 (CVDLv4).
@@ -17,6 +17,7 @@ package com.vaadin.flow.component.crud.testbench;
  */
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
+import com.vaadin.flow.component.confirmdialog.testbench.ConfirmDialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
 import com.vaadin.flow.component.grid.testbench.GridTRElement;
@@ -103,7 +104,8 @@ public class CrudElement extends TestBenchElement {
      * @return the editor save button
      */
     public ButtonElement getEditorSaveButton() {
-        return getEditorButton(0);
+        return ((TestBenchElement) getPropertyElement("_saveButton"))
+                .wrap(ButtonElement.class);
     }
 
     /**
@@ -112,7 +114,8 @@ public class CrudElement extends TestBenchElement {
      * @return the editor cancel button
      */
     public ButtonElement getEditorCancelButton() {
-        return getEditorButton(1);
+        return ((TestBenchElement) getPropertyElement("_cancelButton"))
+                .wrap(ButtonElement.class);
     }
 
     /**
@@ -121,12 +124,8 @@ public class CrudElement extends TestBenchElement {
      * @return the editor delete button
      */
     public ButtonElement getEditorDeleteButton() {
-        return getEditorButton(2);
-    }
-
-    private ButtonElement getEditorButton(int index) {
-        return getEditor().$(ButtonElement.class).attribute("slot", "footer")
-                .get(index);
+        return ((TestBenchElement) getPropertyElement("_deleteButton"))
+                .wrap(ButtonElement.class);
     }
 
     /**
@@ -137,8 +136,8 @@ public class CrudElement extends TestBenchElement {
      */
     public boolean isEditorOpen() {
         if (getEditorPosition().isEmpty()) {
-            return $("vaadin-dialog-overlay").onPage().attribute("opened", "")
-                    .exists();
+            return $("vaadin-crud-dialog-overlay").onPage()
+                    .attribute("opened", "").exists();
         }
         return getPropertyBoolean("editorOpened");
     }
@@ -169,9 +168,27 @@ public class CrudElement extends TestBenchElement {
      */
     public TestBenchElement getEditor() {
         if (getEditorPosition().isEmpty()) {
-            return $("vaadin-dialog-overlay").onPage().attribute("opened", "")
-                    .first();
+            return $("vaadin-crud-dialog-overlay").onPage()
+                    .attribute("opened", "").first();
         }
-        return this.$("vaadin-dialog-layout").first();
+        return this;
+    }
+
+    /**
+     * Gets the confirm cancel dialog
+     *
+     * @return the confirm cancel dialog
+     */
+    public ConfirmDialogElement getConfirmCancelDialog() {
+        return this.$(ConfirmDialogElement.class).id("confirmCancel");
+    }
+
+    /**
+     * Gets the confirm delete dialog
+     *
+     * @return the confirm delete dialog
+     */
+    public ConfirmDialogElement getConfirmDeleteDialog() {
+        return this.$(ConfirmDialogElement.class).id("confirmDelete");
     }
 }

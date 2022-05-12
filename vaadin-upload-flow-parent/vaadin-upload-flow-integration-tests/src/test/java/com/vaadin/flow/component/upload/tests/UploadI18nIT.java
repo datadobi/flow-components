@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2021 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,7 +27,6 @@ import elemental.json.JsonType;
 import elemental.json.JsonValue;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
@@ -40,10 +39,8 @@ public class UploadI18nIT extends AbstractUploadIT {
         open();
 
         UploadElement upload = $(UploadElement.class).id("upload-full-i18n");
-        WebElement addButton = findInShadowRoot(upload, By.id("addButton"))
-                .get(0);
-        WebElement dropLabel = findInShadowRoot(upload, By.id("dropLabel"))
-                .get(0);
+        WebElement addButton = upload.$("*").id("addButton");
+        WebElement dropLabel = upload.$("*").id("dropLabel");
 
         Assert.assertEquals(UploadTestsI18N.RUSSIAN_FULL.getAddFiles().getOne(),
                 addButton.getText());
@@ -79,10 +76,8 @@ public class UploadI18nIT extends AbstractUploadIT {
         open();
 
         UploadElement upload = $(UploadElement.class).id("upload-partial-i18n");
-        WebElement addButton = findInShadowRoot(upload, By.id("addButton"))
-                .get(0);
-        WebElement dropLabel = findInShadowRoot(upload, By.id("dropLabel"))
-                .get(0);
+        WebElement addButton = upload.$("*").id("addButton");
+        WebElement dropLabel = upload.$("*").id("dropLabel");
 
         // This label should still be the default one
         Assert.assertEquals("Upload File...", addButton.getText());

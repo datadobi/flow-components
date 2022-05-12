@@ -4,8 +4,8 @@ import com.google.gson.*;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.demo.AbstractChartExample;
-import com.vaadin.flow.component.charts.demo.examples.dynamic.ServerSideEvents;
+import com.vaadin.flow.component.charts.examples.AbstractChartExample;
+import com.vaadin.flow.component.charts.examples.dynamic.ServerSideEvents;
 import com.vaadin.flow.component.charts.events.*;
 import com.vaadin.flow.component.charts.model.DataSeries;
 import com.vaadin.flow.component.charts.model.Series;
@@ -15,7 +15,6 @@ import com.vaadin.testbench.TestBenchElement;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -190,7 +189,7 @@ public class ServerSideEventsIT extends AbstractTBTest {
     @Test
     public void select_occured_eventIsFired() {
         ChartElement chart = getChartElement();
-        List<WebElement> points = chart.getPoints();
+        List<TestBenchElement> points = chart.$(".highcharts-point").all();
         points.get(1).click();
 
         assertHasEventOfType(PointSelectEvent.class);
@@ -257,12 +256,12 @@ public class ServerSideEventsIT extends AbstractTBTest {
 
     private WebElement findLastDataPointOfTheFirstSeries() {
         return getElementFromShadowRoot(getChartElement(),
-                By.cssSelector(".highcharts-markers > path"));
+                ".highcharts-markers > path");
     }
 
     private WebElement findLegendItem() {
-        return getElementFromShadowRoot(getChartElement(),
-                By.className("highcharts-legend-item"));
+        return getChartElement().$("*")
+                .attributeContains("class", "highcharts-legend-item").first();
     }
 
     private WebElement findCheckBox() {
@@ -274,8 +273,8 @@ public class ServerSideEventsIT extends AbstractTBTest {
     }
 
     private WebElement findCheckBox(int index) {
-        return getElementFromShadowRoot(getChartElement(),
-                By.cssSelector("input[type=\"checkbox\"]"), index);
+        return getChartElement().$("input")
+                .attributeContains("type", "checkbox").get(index);
     }
 
     private WebElement findDisableVisibityToggle() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2020 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,7 +37,7 @@ public class ItemCountUnknownGridIT extends AbstractItemCountGridIT {
         doScroll(45, getDefaultInitialItemCount(), 1, 50, 150);
 
         // trigger next page fetch and size buffer increase
-        doScroll(110, 400, 2, 150, 200);
+        doScroll(125, 400, 2, 150, 200);
 
         // jump over a page, trigger fetch
         doScroll(270, 400, 3, 250, 350);

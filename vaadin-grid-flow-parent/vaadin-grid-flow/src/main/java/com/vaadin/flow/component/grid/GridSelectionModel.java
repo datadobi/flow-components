@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,7 +37,7 @@ public interface GridSelectionModel<T> extends SelectionModel<Grid<T>, T> {
      * Handles the deselection of an item that originates from the client.
      *
      * @param item
-     *            the item beign deselected
+     *            the item being deselected
      */
     void deselectFromClient(T item);
 }

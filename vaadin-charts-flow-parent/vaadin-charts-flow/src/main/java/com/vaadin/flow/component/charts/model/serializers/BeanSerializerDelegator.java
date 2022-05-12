@@ -4,11 +4,11 @@ package com.vaadin.flow.component.charts.model.serializers;
  * #%L
  * Vaadin Charts for Flow
  * %%
- * Copyright (C) 2014 - 2020 Vaadin Ltd
+ * Copyright 2000-2022 Vaadin Ltd.
  * %%
  * This program is available under Commercial Vaadin Developer License
  * 4.0 (CVDLv4).
- * 
+ *
  * For the full License, see <https://vaadin.com/license/cvdl-4.0>.
  * #L%
  */
@@ -16,6 +16,7 @@ package com.vaadin.flow.component.charts.model.serializers;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.BeanAsArraySerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
@@ -71,8 +72,21 @@ public class BeanSerializerDelegator<T> extends BeanSerializerBase {
     }
 
     @Override
+    protected BeanSerializerBase withByNameInclusion(Set<String> set,
+            Set<String> set1) {
+        throw new IllegalArgumentException("Method has not been implemented.");
+    }
+
+    @Override
     public BeanSerializerBase withFilterId(Object filterId) {
         return new BeanSerializerDelegator(this, filterId);
+    }
+
+    @Override
+    protected BeanSerializerBase withProperties(
+            BeanPropertyWriter[] beanPropertyWriters,
+            BeanPropertyWriter[] beanPropertyWriters1) {
+        throw new IllegalArgumentException("Method has not been implemented.");
     }
 
     @Override

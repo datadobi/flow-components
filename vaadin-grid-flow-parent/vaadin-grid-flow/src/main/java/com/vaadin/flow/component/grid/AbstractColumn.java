@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -240,9 +240,14 @@ abstract class AbstractColumn<T extends AbstractColumn<T>> extends Component
     protected String addGridSorter(String templateInnerHtml) {
         String escapedColumnId = HtmlUtils
                 .escape(getBottomLevelColumn().getInternalId());
+
+        String textContent = org.jsoup.Jsoup.parse(templateInnerHtml).text();
+        String sortBy = textContent.isBlank() ? ""
+                : "aria-label='Sort by " + textContent + "'";
+
         return String.format(
-                "<vaadin-grid-sorter path='%s'>%s</vaadin-grid-sorter>",
-                escapedColumnId, templateInnerHtml);
+                "<vaadin-grid-sorter path='%s' %s>%s</vaadin-grid-sorter>",
+                escapedColumnId, sortBy, templateInnerHtml);
     }
 
     /**

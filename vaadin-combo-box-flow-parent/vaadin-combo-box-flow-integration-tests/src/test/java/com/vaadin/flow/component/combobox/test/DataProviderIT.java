@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -99,5 +99,19 @@ public class DataProviderIT extends AbstractComponentIT {
         Assert.assertEquals(
                 "Item is not the same as in the refreshed data provider.",
                 "bar", items.get(0));
+    }
+
+    @Test
+    public void loadData_toggleAttached_correctItemsDisplayed() {
+        // Detach and reattach the combobox
+        findElement(By.id("toggle-attached")).click();
+        findElement(By.id("toggle-attached")).click();
+
+        // Open the popup
+        ComboBoxElement comboBox = $(ComboBoxElement.class)
+                .id("combo-box-with-reduce-data-set");
+        comboBox.openPopup();
+
+        waitUntil(e -> "bar".equals(comboBox.getOptions().get(1)));
     }
 }

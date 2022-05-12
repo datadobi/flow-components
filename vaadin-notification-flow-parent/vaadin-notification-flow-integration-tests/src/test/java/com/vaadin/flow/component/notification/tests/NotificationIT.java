@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,19 +19,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.vaadin.flow.testutil.TestPath;
+import com.vaadin.tests.AbstractComponentIT;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.vaadin.flow.component.notification.demo.NotificationView;
-import com.vaadin.tests.ComponentDemoTest;
-
 /**
  * Integration tests for the {@link NotificationView}.
  */
-public class NotificationIT extends ComponentDemoTest {
+@TestPath("vaadin-notification")
+public class NotificationIT extends AbstractComponentIT {
     private static final String NOTIFICATION_TAG = "vaadin-notification-card";
+
+    @Before
+    public void init() {
+        open();
+    }
 
     @Test
     public void defaultNotification() {
@@ -126,10 +133,5 @@ public class NotificationIT extends ComponentDemoTest {
 
     private void checkNotificationIsOpen() {
         waitForElementPresent(By.tagName(NOTIFICATION_TAG));
-    }
-
-    @Override
-    protected String getTestPath() {
-        return ("/vaadin-notification");
     }
 }

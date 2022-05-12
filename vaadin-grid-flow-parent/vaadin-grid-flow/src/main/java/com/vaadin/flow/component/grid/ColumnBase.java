@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -80,8 +80,36 @@ interface ColumnBase<T extends ColumnBase<T>> extends HasElement {
     }
 
     /**
+     * Sets this column's frozen state.
+     * <p>
+     * <strong>Note:</strong> Columns are frozen in-place, freeze columns from
+     * right to left for a consistent outcome.
+     *
+     * @param frozenToEnd
+     *            whether to freeze or unfreeze this column
+     * @return this column, for method chaining
+     * @since 23.1
+     */
+    @SuppressWarnings("unchecked")
+    default T setFrozenToEnd(boolean frozenToEnd) {
+        getElement().setProperty("frozenToEnd", frozenToEnd);
+        return (T) this;
+    }
+
+    /**
+     * Gets the this column's frozen state.
+     *
+     * @return whether this column is frozen to end
+     * @since 23.1
+     */
+    @Synchronize("frozen-to-end-changed")
+    default boolean isFrozenToEnd() {
+        return getElement().getProperty("frozenToEnd", false);
+    }
+
+    /**
      * Sets the column text align.
-     * 
+     *
      * @param textAlign
      *            the text alignment of the column. Setting it to
      *            <code>null</code> resets the alignment to the default value
@@ -97,7 +125,7 @@ interface ColumnBase<T extends ColumnBase<T>> extends HasElement {
 
     /**
      * Gets the column text align. The default is {@link ColumnTextAlign#START}.
-     * 
+     *
      * @return the column text align, not <code>null</code>
      */
     @Synchronize("text-align-changed")

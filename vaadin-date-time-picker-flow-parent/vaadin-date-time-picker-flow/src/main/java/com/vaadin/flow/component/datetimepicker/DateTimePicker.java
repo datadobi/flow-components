@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -22,6 +22,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
@@ -31,7 +33,7 @@ import com.vaadin.flow.component.timepicker.StepsUtil;
 import com.vaadin.flow.function.SerializableFunction;
 
 @Tag("vaadin-date-time-picker-date-picker")
-@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.1.0-beta1")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
 class DateTimePickerDatePicker
         extends com.vaadin.flow.component.datepicker.DatePicker {
@@ -46,7 +48,7 @@ class DateTimePickerDatePicker
 }
 
 @Tag("vaadin-date-time-picker-time-picker")
-@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.1.0-beta1")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
 class DateTimePickerTimePicker
         extends com.vaadin.flow.component.timepicker.TimePicker {
@@ -61,15 +63,19 @@ class DateTimePickerTimePicker
 }
 
 /**
- * Server-side component that encapsulates the functionality of the
- * {@code vaadin-date-time-picker} web component.
+ * Date Time Picker is an input field for selecting both a date and a time. The
+ * date and time can be entered directly using a keyboard in the format of the
+ * current locale or through the Date Time Picker’s two overlays. The overlays
+ * open when their respective fields are clicked or any input is entered when
+ * the fields are focused.
  *
+ * @author Vaadin Ltd
  */
 @Tag("vaadin-date-time-picker")
-@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.1.0-beta1")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
-@NpmPackage(value = "@vaadin/date-time-picker", version = "23.0.0-alpha1")
-@NpmPackage(value = "@vaadin/vaadin-date-time-picker", version = "23.0.0-alpha1")
+@NpmPackage(value = "@vaadin/date-time-picker", version = "23.1.0-beta1")
+@NpmPackage(value = "@vaadin/vaadin-date-time-picker", version = "23.1.0-beta1")
 @JsModule("@vaadin/date-time-picker/src/vaadin-date-time-picker.js")
 public class DateTimePicker
         extends AbstractSinglePropertyField<DateTimePicker, LocalDateTime>
@@ -143,12 +149,20 @@ public class DateTimePicker
             initialDateTime = sanitizeValue(initialDateTime);
             setPresentationValue(initialDateTime);
             synchronizeChildComponentValues(initialDateTime);
+        } else if (this.getElement().getProperty("value") == null) {
+            // Apply `null` as a value to force the client side `value` property
+            // to be initialized with an empty string. Having an empty string
+            // will prevent `ValueChangeEvent` which otherwise can be triggered
+            // in response to Polymer converting `null` to an empty string by
+            // itself.
+            // Only apply `null` if the element does not already have a value,
+            // which can be the case when binding to an existing element from a
+            // Lit template.
+            setPresentationValue(null);
         }
 
         addToSlot(datePicker, "date-picker");
         addToSlot(timePicker, "time-picker");
-
-        setLocale(UI.getCurrent().getLocale());
 
         // workaround for https://github.com/vaadin/flow/issues/3496
         setInvalid(false);
@@ -466,7 +480,11 @@ public class DateTimePicker
      */
     @Override
     public Locale getLocale() {
-        return locale;
+        if (locale != null) {
+            return locale;
+        } else {
+            return super.getLocale();
+        }
     }
 
     /**
@@ -741,5 +759,29 @@ public class DateTimePicker
         super.onAttach(attachEvent);
         FieldValidationUtil.disableClientValidation(this);
 
+    }
+
+    /**
+     * Adds theme variants to the component.
+     *
+     * @param variants
+     *            theme variants to add
+     */
+    public void addThemeVariants(DateTimePickerVariant... variants) {
+        getThemeNames().addAll(
+                Stream.of(variants).map(DateTimePickerVariant::getVariantName)
+                        .collect(Collectors.toList()));
+    }
+
+    /**
+     * Removes theme variants from the component.
+     *
+     * @param variants
+     *            theme variants to remove
+     */
+    public void removeThemeVariants(DateTimePickerVariant... variants) {
+        getThemeNames().removeAll(
+                Stream.of(variants).map(DateTimePickerVariant::getVariantName)
+                        .collect(Collectors.toList()));
     }
 }

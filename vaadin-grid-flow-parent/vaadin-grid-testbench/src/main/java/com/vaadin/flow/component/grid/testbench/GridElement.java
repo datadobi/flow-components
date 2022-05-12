@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,7 @@ package com.vaadin.flow.component.grid.testbench;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
+import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -278,7 +278,7 @@ public class GridElement extends TestBenchElement {
     /**
      * Finds the vaadin-grid-cell-content element for the given row and column
      * in header.
-     * 
+     *
      * @param rowIndex
      *            the index of the row in the header
      * @param columnIndex
@@ -288,7 +288,7 @@ public class GridElement extends TestBenchElement {
      */
     public TestBenchElement getHeaderCellContent(int rowIndex,
             int columnIndex) {
-        WebElement thead = findInShadowRoot(By.id("header")).get(0);
+        WebElement thead = $("*").id("header");
         List<WebElement> headerRows = thead.findElements(By.tagName("tr"));
         List<WebElement> headerCells = headerRows.get(rowIndex)
                 .findElements(By.tagName("th"));
@@ -302,22 +302,15 @@ public class GridElement extends TestBenchElement {
     /**
      * Find all {@link WebElement}s using the given {@link By} selector.
      *
+     * @deprecated this method will not working for Chrome 96+, because of the
+     *             breaking changes in ChromeDriver.
      * @param by
      *            the selector used to find elements
      * @return a list of found elements
      */
+    @Deprecated
     public List<WebElement> findInShadowRoot(By by) {
         return getShadowRoot().findElements(by);
-    }
-
-    private WebElement getShadowRoot() {
-        waitUntil(driver -> getCommandExecutor()
-                .executeScript("return arguments[0].shadowRoot", this) != null);
-        WebElement shadowRoot = (WebElement) getCommandExecutor()
-                .executeScript("return arguments[0].shadowRoot", this);
-        Assert.assertNotNull("Could not locate shadowRoot in the element",
-                shadowRoot);
-        return shadowRoot;
     }
 
     /**
@@ -348,9 +341,14 @@ public class GridElement extends TestBenchElement {
      *            the row to select
      */
     void select(GridTRElement row) {
-        if (isMultiselect()) {
-            executeScript("arguments[0].selectItem(arguments[1]._item);", this,
-                    row);
+        GridColumnElement multiSelectColumn = getMultiSelectColumn();
+        if (multiSelectColumn != null) {
+            GridTHTDElement cell = row.getCell(multiSelectColumn);
+            CheckboxElement checkbox = wrapElement(cell.getFirstChildElement(),
+                    getCommandExecutor()).wrap(CheckboxElement.class);
+            if (!checkbox.isChecked()) {
+                checkbox.click();
+            }
         } else {
             setActiveItem(row);
         }
@@ -373,9 +371,14 @@ public class GridElement extends TestBenchElement {
      *            the row to deselect
      */
     void deselect(GridTRElement row) {
-        if (isMultiselect()) {
-            executeScript("arguments[0].deselectItem(arguments[1]._item);",
-                    this, row);
+        GridColumnElement multiSelectColumn = getMultiSelectColumn();
+        if (multiSelectColumn != null) {
+            GridTHTDElement cell = row.getCell(multiSelectColumn);
+            CheckboxElement checkbox = wrapElement(cell.getFirstChildElement(),
+                    getCommandExecutor()).wrap(CheckboxElement.class);
+            if (checkbox.isChecked()) {
+                checkbox.click();
+            }
         } else {
             removeActiveItem(row);
         }
@@ -392,15 +395,17 @@ public class GridElement extends TestBenchElement {
     }
 
     /**
-     * Checks if the grid is in multi select mode.
+     * Get the multi-select column of the grid. Returns null, if the grid is not
+     * in multi-selection mode, or doesn't have a multi-selection column.
      *
-     * @return <code>true</code> if the grid is in multi select mode as defined
-     *         by the Flow grid, <code>false</code> otherwise
+     * @return the multi-select column, or null
      */
-    private boolean isMultiselect() {
-        return (boolean) executeScript(
-                "return arguments[0]._getColumns().filter(function(col) { return typeof col.selectAll != 'undefined';}).length > 0",
+    private GridColumnElement getMultiSelectColumn() {
+        List<Long> columnIds = (List<Long>) executeScript(
+                "return arguments[0]._getColumns().filter(function(col) { return typeof col.selectAll != 'undefined';}).map(function(column) { return column.__generatedTbId;});",
                 this);
+        if (columnIds.isEmpty())
+            return null;
+        return new GridColumnElement(columnIds.get(0), this);
     }
-
 }

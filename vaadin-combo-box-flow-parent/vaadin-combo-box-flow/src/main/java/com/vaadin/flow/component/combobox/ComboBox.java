@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,6 +29,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.HasClearButton;
 import com.vaadin.flow.component.HasHelper;
 import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
@@ -77,9 +78,8 @@ import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 
 /**
- * Server-side component for the {@code vaadin-combo-box} webcomponent. It
- * contains the same features of the webcomponent, such as item filtering,
- * object selection and item templating.
+ * Combo Box allows the user to choose a value from a filterable list of options
+ * presented in an overlay.
  * <p>
  * ComboBox supports lazy loading. This means that when using large data sets,
  * items are requested from the server one "page" at a time when the user
@@ -109,7 +109,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
         HasDataView<T, String, ComboBoxDataView<T>>,
         HasListDataView<T, ComboBoxListDataView<T>>,
         HasLazyDataView<T, String, ComboBoxLazyDataView<T>>, HasHelper,
-        HasTheme, HasLabel {
+        HasTheme, HasLabel, HasClearButton {
 
     private static final String PROP_INPUT_ELEMENT_VALUE = "_inputElementValue";
     private static final String PROP_SELECTED_ITEM = "selectedItem";
@@ -202,7 +202,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
 
         @Override
         public void clear(int start, int length) {
-            // NO-OP
+            enqueue("$connector.clear", start, length);
         }
 
         @Override
@@ -309,6 +309,8 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
         // `ComboBox.addCustomValueSetListener`.
         super.addCustomValueSetListener(e -> this.getElement()
                 .setProperty(PROP_INPUT_ELEMENT_VALUE, e.getDetail()));
+
+        super.addValueChangeListener(e -> updateSelectedKey());
     }
 
     /**
@@ -323,6 +325,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
      *
      * @param label
      *            the label describing the combo box
+     * @see #setLabel(String)
      */
     public ComboBox(String label) {
         this();
@@ -337,6 +340,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
      *            the label describing the combo box
      * @param items
      *            the items to be shown in the list of the combo box
+     * @see #setLabel(String)
      * @see #setItems(Collection)
      */
     public ComboBox(String label, Collection<T> items) {
@@ -353,12 +357,65 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
      *            the label describing the combo box
      * @param items
      *            the items to be shown in the list of the combo box
+     * @see #setLabel(String)
      * @see #setItems(Object...)
      */
     @SafeVarargs
     public ComboBox(String label, T... items) {
         this();
         setLabel(label);
+        setItems(items);
+    }
+
+    /**
+     * Constructs a combo box with a value change listener.
+     *
+     * @param listener
+     *            the value change listener to add
+     * @see #addValueChangeListener(ValueChangeListener)
+     */
+    public ComboBox(
+            ValueChangeListener<ComponentValueChangeEvent<ComboBox<T>, T>> listener) {
+        this();
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Constructs a combo box with the defined label and a value change
+     * listener.
+     *
+     * @param label
+     *            the label describing the combo box
+     * @param listener
+     *            the value change listener to add
+     * @see #setLabel(String)
+     * @see #addValueChangeListener(ValueChangeListener)
+     */
+    public ComboBox(String label,
+            ValueChangeListener<ComponentValueChangeEvent<ComboBox<T>, T>> listener) {
+        this(label);
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Constructs a combo box with the defined label, a value change listener
+     * and populated with the items in the array.
+     *
+     * @param label
+     *            the label describing the combo box
+     * @param listener
+     *            the value change listener to add
+     * @param items
+     *            the items to be shown in the list of the combo box
+     * @see #setLabel(String)
+     * @see #addValueChangeListener(ValueChangeListener)
+     * @see #setItems(Object...)
+     */
+    @SafeVarargs
+    public ComboBox(String label,
+            ValueChangeListener<ComponentValueChangeEvent<ComboBox<T>, T>> listener,
+            T... items) {
+        this(label, listener);
         setItems(items);
     }
 
@@ -969,7 +1026,6 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
             dataProviderListener.remove();
             dataProviderListener = null;
         }
-        removeLazyOpenRegistration();
 
         if (clearFilterOnCloseRegistration != null) {
             clearFilterOnCloseRegistration.remove();
@@ -979,8 +1035,10 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
     }
 
     private void refreshAllData(boolean forceServerSideFiltering) {
-        setClientSideFilter(!forceServerSideFiltering
-                && dataCommunicator.getItemCount() <= getPageSizeDouble());
+        if (dataCommunicator != null) {
+            setClientSideFilter(!forceServerSideFiltering
+                    && dataCommunicator.getItemCount() <= getPageSizeDouble());
+        }
 
         reset();
     }
@@ -1197,7 +1255,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
         if (dataCommunicator != null) {
             dataCommunicator.setPageSize(pageSize);
         }
-        reset();
+        refreshAllData(shouldForceServerSideFiltering);
     }
 
     /**
@@ -1484,34 +1542,6 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
     }
 
     /**
-     * Allows displaying a clear button in the combo box when a value is
-     * selected.
-     * <p>
-     * The clear button is an icon, which can be clicked to set the combo box
-     * value to {@code null}.
-     *
-     * @param clearButtonVisible
-     *            {@code true} to display the clear button, {@code false} to
-     *            hide it
-     */
-    @Override
-    public void setClearButtonVisible(boolean clearButtonVisible) {
-        super.setClearButtonVisible(clearButtonVisible);
-    }
-
-    /**
-     * Gets whether this combo box displays a clear button when a value is
-     * selected.
-     *
-     * @return {@code true} if this combo box displays a clear button,
-     *         {@code false} otherwise
-     * @see #setClearButtonVisible(boolean)
-     */
-    public boolean isClearButtonVisible() {
-        return super.isClearButtonVisibleBoolean();
-    }
-
-    /**
      * Supply items lazily with a callback from a backend. The ComboBox will
      * automatically fetch more items and adjust its size until the backend runs
      * out of items. Usage example without component provided filter:
@@ -1658,6 +1688,12 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
         reset();
     }
 
+    private void updateSelectedKey() {
+        // Send (possibly updated) key for the selected value
+        getElement().executeJs("this._selectedKey=$0",
+                getValue() != null ? getKeyMapper().key(getValue()) : "");
+    }
+
     @ClientCallable
     private void confirmUpdate(int id) {
         dataCommunicator.confirmUpdate(id);
@@ -1667,9 +1703,7 @@ public class ComboBox<T> extends GeneratedVaadinComboBox<ComboBox<T>, T>
     private void setRequestedRange(int start, int length, String filter) {
         dataCommunicator.setRequestedRange(start, length);
         filterSlot.accept(filter);
-        // Send (possibly updated) key for the selected value
-        getElement().executeJs("this._selectedKey=$0",
-                getValue() != null ? getKeyMapper().key(getValue()) : "");
+        updateSelectedKey();
     }
 
     @ClientCallable

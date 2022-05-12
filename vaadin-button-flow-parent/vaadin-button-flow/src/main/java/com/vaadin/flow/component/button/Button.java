@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -34,7 +34,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Server-side component for the <code>vaadin-button</code> element.
+ * The Button component allows users to perform actions. It comes in several
+ * different style variants, and supports icons in addition to text labels.
  *
  * @author Vaadin Ltd
  */
@@ -404,8 +405,8 @@ public class Button extends GeneratedVaadinButton<Button>
         if (changes != null) {
             changes.remove("disabled");
             setEnabled(false);
-            getUI().ifPresent(ui -> ui.beforeClientResponse(this,
-                    executionContext -> {
+            getUI().ifPresent(
+                    ui -> ui.beforeClientResponse(this, executionContext -> {
                         // in case the disabled status was reverted,
                         // the client might not update the value in
                         // case it was that already

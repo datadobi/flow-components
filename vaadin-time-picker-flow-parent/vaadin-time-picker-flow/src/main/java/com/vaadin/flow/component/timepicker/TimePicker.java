@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,35 +17,41 @@ package com.vaadin.flow.component.timepicker;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasClearButton;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasHelper;
 import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.SerializableFunction;
+import com.vaadin.flow.internal.StateTree;
 import com.vaadin.flow.shared.Registration;
 
 /**
- * An input component for selecting time of day, based on
- * {@code vaadin-time-picker} web component.
+ * Time Picker is an input field for entering or selecting a specific time. The
+ * time can be entered directly using a keyboard or by choosing a value from a
+ * set of predefined options presented in an overlay. The overlay opens when the
+ * field is clicked or any input is entered when the field is focused.
  *
  * @author Vaadin Ltd
  */
-@JsModule("./timepickerConnector.js")
+@JsModule("./vaadin-time-picker/timepickerConnector.js")
 public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
-        implements HasSize, HasValidation, HasEnabled, HasHelper, HasLabel {
+        implements HasSize, HasValidation, HasEnabled, HasHelper, HasLabel,
+        HasTheme, HasClearButton {
 
     private static final SerializableFunction<String, LocalTime> PARSER = valueFromClient -> {
         return valueFromClient == null || valueFromClient.isEmpty() ? null
@@ -59,11 +65,11 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
     private static final String PROP_AUTO_OPEN_DISABLED = "autoOpenDisabled";
 
     private Locale locale;
-    private transient DateTimeFormatter dateTimeFormatter;
 
     private LocalTime max;
     private LocalTime min;
     private boolean required;
+    private StateTree.ExecutionRegistration pendingLocaleUpdate;
 
     /**
      * Default constructor.
@@ -140,6 +146,42 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
     public TimePicker(
             ValueChangeListener<ComponentValueChangeEvent<TimePicker, LocalTime>> listener) {
         this();
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Convenience constructor to create a time picker with a pre-selected time
+     * and {@link ValueChangeListener}.
+     *
+     * @param time
+     *            the pre-selected time in the picker
+     * @param listener
+     *            the listener to receive value change events
+     * @see #addValueChangeListener(HasValue.ValueChangeListener)
+     */
+    public TimePicker(LocalTime time,
+            ValueChangeListener<ComponentValueChangeEvent<TimePicker, LocalTime>> listener) {
+        this(time);
+        addValueChangeListener(listener);
+    }
+
+    /**
+     * Convenience constructor to create a time picker with a label, a
+     * pre-selected time and a {@link ValueChangeListener}.
+     *
+     * @param label
+     *            the label describing the time picker
+     * @param time
+     *            the pre-selected time in the picker
+     * @param listener
+     *            the listener to receive value change events
+     * @see #setLabel(String)
+     * @see #addValueChangeListener(HasValue.ValueChangeListener)
+     */
+    public TimePicker(String label, LocalTime time,
+            ValueChangeListener<ComponentValueChangeEvent<TimePicker, LocalTime>> listener) {
+        this(time);
+        setLabel(label);
         addValueChangeListener(listener);
     }
 
@@ -331,6 +373,30 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
     }
 
     /**
+     * Adds theme variants to the component.
+     *
+     * @param variants
+     *            theme variants to add
+     */
+    public void addThemeVariants(TimePickerVariant... variants) {
+        getThemeNames().addAll(
+                Stream.of(variants).map(TimePickerVariant::getVariantName)
+                        .collect(Collectors.toList()));
+    }
+
+    /**
+     * Removes theme variants from the component.
+     *
+     * @param variants
+     *            theme variants to remove
+     */
+    public void removeThemeVariants(TimePickerVariant... variants) {
+        getThemeNames().removeAll(
+                Stream.of(variants).map(TimePickerVariant::getVariantName)
+                        .collect(Collectors.toList()));
+    }
+
+    /**
      * Performs server-side validation of the current value. This is needed
      * because it is possible to circumvent the client-side validation
      * constraints using browser development tools.
@@ -343,10 +409,8 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        if (getLocale() == null) {
-            setLocale(attachEvent.getUI().getLocale());
-        }
         initConnector();
+        requestLocaleUpdate();
         FieldValidationUtil.disableClientValidation(this);
     }
 
@@ -392,17 +456,7 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
         }
 
         this.locale = locale;
-        this.dateTimeFormatter = null;
-        // we could support script & variant, but that requires more work on
-        // client side to detect the different
-        // number characters for other scripts (current only Arabic there)
-        StringBuilder bcp47LanguageTag = new StringBuilder(
-                locale.getLanguage());
-        if (!locale.getCountry().isEmpty()) {
-            bcp47LanguageTag.append("-").append(locale.getCountry());
-        }
-        runBeforeClientResponse(ui -> getElement().callJsFunction(
-                "$connector.setLocale", bcp47LanguageTag.toString()));
+        requestLocaleUpdate();
     }
 
     /**
@@ -416,7 +470,37 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
      */
     @Override
     public Locale getLocale() {
-        return locale;
+        if (locale != null) {
+            return locale;
+        } else {
+            return super.getLocale();
+        }
+    }
+
+    private void requestLocaleUpdate() {
+        getUI().ifPresent(ui -> {
+            if (pendingLocaleUpdate != null) {
+                pendingLocaleUpdate.remove();
+            }
+            pendingLocaleUpdate = ui.beforeClientResponse(this, context -> {
+                pendingLocaleUpdate = null;
+                executeLocaleUpdate();
+            });
+        });
+    }
+
+    private void executeLocaleUpdate() {
+        Locale appliedLocale = getLocale();
+        // we could support script & variant, but that requires more work on
+        // client side to detect the different
+        // number characters for other scripts (current only Arabic there)
+        StringBuilder bcp47LanguageTag = new StringBuilder(
+                appliedLocale.getLanguage());
+        if (!appliedLocale.getCountry().isEmpty()) {
+            bcp47LanguageTag.append("-").append(appliedLocale.getCountry());
+        }
+        runBeforeClientResponse(ui -> getElement().callJsFunction(
+                "$connector.setLocale", bcp47LanguageTag.toString()));
     }
 
     /**
@@ -528,32 +612,6 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
         return this.getMax();
     }
 
-    /**
-     * Sets displaying a clear button in the time picker when it has value.
-     * <p>
-     * The clear button is an icon, which can be clicked to set the time picker
-     * value to {@code null}.
-     *
-     * @param clearButtonVisible
-     *            {@code true} to display the clear button, {@code false} to
-     *            hide it
-     */
-    @Override
-    public void setClearButtonVisible(boolean clearButtonVisible) {
-        super.setClearButtonVisible(clearButtonVisible);
-    }
-
-    /**
-     * Gets whether this time picker displays a clear button when it has value.
-     *
-     * @return {@code true} if this time picker displays a clear button,
-     *         {@code false} otherwise
-     * @see #setClearButtonVisible(boolean)
-     */
-    public boolean isClearButtonVisible() {
-        return super.isClearButtonVisibleBoolean();
-    }
-
     private void runBeforeClientResponse(SerializableConsumer<UI> command) {
         getElement().getNode().runWhenAttached(ui -> ui
                 .beforeClientResponse(this, context -> command.accept(ui)));
@@ -598,15 +656,6 @@ public class TimePicker extends GeneratedVaadinTimePicker<TimePicker, LocalTime>
     public static Stream<Locale> getSupportedAvailableLocales() {
         return Stream.of(Locale.getAvailableLocales())
                 .filter(locale -> !locale.getLanguage().isEmpty());
-    }
-
-    private DateTimeFormatter initializeAndReturnFormatter() {
-        if (dateTimeFormatter == null) {
-            dateTimeFormatter = locale == null
-                    ? DateTimeFormatter.ISO_LOCAL_TIME
-                    : DateTimeFormatter.ISO_LOCAL_TIME.withLocale(locale);
-        }
-        return dateTimeFormatter;
     }
 
     private static String format(LocalTime time) {

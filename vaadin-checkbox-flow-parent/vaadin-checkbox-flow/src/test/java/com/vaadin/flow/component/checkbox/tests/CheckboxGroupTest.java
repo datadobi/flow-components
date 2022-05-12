@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -519,6 +519,23 @@ public class CheckboxGroupTest {
                 .setValue(Collections.singleton(new CustomItem(null, "First")));
         Assert.assertNull(checkboxGroup.getSelectedItems().stream().findFirst()
                 .get().getId());
+    }
+
+    @Test
+    public void setItems_createsLabelValueEventAndItems() {
+        CustomItem first = new CustomItem(1L, "First");
+        CustomItem second = new CustomItem(2L, "Second");
+        CustomItem third = new CustomItem(3L, "Third");
+
+        AtomicReference<HasValue.ValueChangeEvent> capture = new AtomicReference<>();
+        CheckboxGroup<CustomItem> checkboxGroup = new CheckboxGroup<>("label",
+                capture::set, first, second, third);
+
+        Assert.assertEquals("Invalid number of items", 3,
+                checkboxGroup.getChildren().count());
+
+        Assert.assertEquals("Invalid label for checkbox group ", "label",
+                checkboxGroup.getElement().getProperty("label"));
     }
 
     private CheckboxGroup<Wrapper> getRefreshEventCheckboxGroup(

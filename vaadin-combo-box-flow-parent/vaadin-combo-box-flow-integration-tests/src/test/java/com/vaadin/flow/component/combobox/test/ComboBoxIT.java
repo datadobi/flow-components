@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,6 +16,8 @@
 package com.vaadin.flow.component.combobox.test;
 
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
+import com.vaadin.flow.testutil.TestPath;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Integration tests for the {@link ComboBoxDemoPage}.
  */
+@TestPath("/vaadin-combo-box-test-demo")
 public class ComboBoxIT extends AbstractComboBoxIT {
 
     @Before
@@ -239,6 +242,7 @@ public class ComboBoxIT extends AbstractComboBoxIT {
     private void testLazyComboBox(String comboBoxId) {
         checkLogsForErrors();
         ComboBoxElement comboBox = $(ComboBoxElement.class).id(comboBoxId);
+        scrollToElement(comboBox);
 
         Assert.assertEquals("No items should be loaded initially.", 0,
                 getLoadedItems(comboBox).size());
@@ -281,10 +285,5 @@ public class ComboBoxIT extends AbstractComboBoxIT {
         return getItemElements().stream()
                 .map(element -> element.getPropertyString("innerHTML"))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    protected String getTestPath() {
-        return ("/vaadin-combo-box-test-demo");
     }
 }

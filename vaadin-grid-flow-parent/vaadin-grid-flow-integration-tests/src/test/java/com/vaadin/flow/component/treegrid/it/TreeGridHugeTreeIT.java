@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,7 +15,6 @@
  */
 package com.vaadin.flow.component.treegrid.it;
 
-import java.lang.management.ManagementFactory;
 import java.util.List;
 
 import com.vaadin.flow.component.grid.testbench.TreeGridElement;
@@ -105,7 +104,6 @@ public class TreeGridHugeTreeIT extends AbstractTreeGridIT {
         // assuming buffer to match visible row count
         int assumedCachedSize = (grid.getLastVisibleRowIndex()
                 - grid.getFirstVisibleRowIndex()) * 3;
-        waitUntil(b -> grid.getRowCount() >= assumedCachedSize);
         waitUntil(test -> !grid.isLoadingExpandedRows(), 20);
         String[] cellTexts = new String[assumedCachedSize];
         for (int i = 0; i < assumedCachedSize; i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,10 +24,10 @@ import com.vaadin.flow.component.ComponentEventListener;
 /**
  * A common interface for components that can have {@link MenuItem}s with click
  * listeners inside them.
- * 
+ *
  * @see ContextMenu
  * @see SubMenu
- * 
+ *
  * @author Vaadin Ltd.
  */
 public interface HasMenuItems extends Serializable {

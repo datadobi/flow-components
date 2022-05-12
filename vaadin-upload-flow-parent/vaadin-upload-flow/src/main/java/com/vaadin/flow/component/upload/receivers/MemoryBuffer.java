@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -39,7 +39,7 @@ public class MemoryBuffer implements Receiver {
 
     /**
      * Get the file data object.
-     * 
+     *
      * @return file data for the latest upload or null
      */
     public FileData getFileData() {
@@ -48,7 +48,7 @@ public class MemoryBuffer implements Receiver {
 
     /**
      * Get the file name for this buffer.
-     * 
+     *
      * @return file name or empty if no file
      */
     public String getFileName() {
@@ -57,7 +57,7 @@ public class MemoryBuffer implements Receiver {
 
     /**
      * Get the input stream for file with filename.
-     * 
+     *
      * @return input stream for file or empty stream if file not found
      */
     public InputStream getInputStream() {

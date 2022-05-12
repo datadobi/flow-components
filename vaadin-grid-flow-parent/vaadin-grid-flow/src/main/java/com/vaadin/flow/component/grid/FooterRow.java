@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Vaadin Ltd.
+ * Copyright 2000-2022 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,14 +24,14 @@ import com.vaadin.flow.component.grid.FooterRow.FooterCell;
 
 /**
  * One row of {@link FooterCell}s in a Grid.
- * 
+ *
  * @author Vaadin Ltd.
  */
 public class FooterRow extends AbstractRow<FooterCell> {
 
     /**
      * A footer cell in a Grid.
-     * 
+     *
      * @author Vaadin Ltd.
      */
     public static class FooterCell extends AbstractCell {
@@ -57,7 +57,7 @@ public class FooterRow extends AbstractRow<FooterCell> {
 
     /**
      * Creates a new footer row from the layer of column elements.
-     * 
+     *
      * @param layer
      */
     FooterRow(ColumnLayer layer) {

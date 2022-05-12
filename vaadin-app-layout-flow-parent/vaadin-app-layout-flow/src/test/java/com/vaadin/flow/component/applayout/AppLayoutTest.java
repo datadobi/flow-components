@@ -2,8 +2,11 @@ package com.vaadin.flow.component.applayout;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -169,6 +172,19 @@ public class AppLayoutTest {
     public void testDrawerClose() {
         systemUnderTest.setDrawerOpened(false);
         testDrawerOpened(false);
+    }
+
+    @Test
+    public void setI18n() {
+        AppLayout.AppLayoutI18n i18n = new AppLayout.AppLayoutI18n()
+                .setDrawer("Custom Drawer");
+        systemUnderTest.setI18n(i18n);
+        assertEquals(i18n, systemUnderTest.getI18n());
+    }
+
+    @Test
+    public void hasStyle() {
+        Assert.assertTrue(systemUnderTest instanceof HasStyle);
     }
 
     private void testDrawerOpened(boolean expectedDrawerOpened) {
