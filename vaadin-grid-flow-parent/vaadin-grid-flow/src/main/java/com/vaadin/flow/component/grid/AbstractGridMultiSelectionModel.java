@@ -159,6 +159,10 @@ public abstract class AbstractGridMultiSelectionModel<T>
                 .unmodifiableSet(new LinkedHashSet<>(selected.values()));
     }
 
+    protected Set<Object> getSelectedItemIds() {
+        return Collections.unmodifiableSet(selected.keySet());
+    }
+
     @Override
     public Optional<T> getFirstSelectedItem() {
         return selected.values().stream().findFirst();
