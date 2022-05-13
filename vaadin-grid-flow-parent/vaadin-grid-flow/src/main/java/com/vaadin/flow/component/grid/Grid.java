@@ -144,7 +144,7 @@ import org.slf4j.LoggerFactory;
 @NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.7")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
 @NpmPackage(value = "@datadobi/grid", version = "23.0.7-datadobi1")
-@NpmPackage(value = "@datadobi/vaadin-grid", version = "23.0.7-datadobi1")
+@NpmPackage(value = "@datadobi/vaadin-grid", version = "23.0.7-datadobi2")
 @JsModule("@datadobi/grid/src/vaadin-grid.js")
 @JsModule("@datadobi/grid/src/vaadin-grid-column.js")
 @JsModule("@datadobi/grid/src/vaadin-grid-sorter.js")
