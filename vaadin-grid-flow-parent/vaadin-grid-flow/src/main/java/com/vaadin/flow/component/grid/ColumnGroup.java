@@ -31,7 +31,7 @@ import com.vaadin.flow.dom.Element;
  *
  * @author Vaadin Ltd.
  */
-@JsModule("@vaadin/grid/src/vaadin-grid-column-group.js")
+@JsModule("@datadobi/grid/src/vaadin-grid-column-group.js")
 @Tag("vaadin-grid-column-group")
 @NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "23.0.7")
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")

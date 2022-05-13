@@ -1,5 +1,5 @@
-import '@vaadin/grid/vaadin-grid-column.js';
-import { GridColumn } from '@vaadin/grid/src/vaadin-grid-column.js';
+import '@datadobi/grid/vaadin-grid-column.js';
+import { GridColumn } from '@datadobi/grid/src/vaadin-grid-column.js';
 {
   class GridFlowSelectionColumnElement extends GridColumn {
 

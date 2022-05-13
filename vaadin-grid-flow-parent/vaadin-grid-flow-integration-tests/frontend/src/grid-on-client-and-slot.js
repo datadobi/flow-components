@@ -1,7 +1,7 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@vaadin/grid/src/vaadin-grid.js';
-import '@vaadin/grid/src/vaadin-grid-column.js';
-import '@vaadin/grid/src/vaadin-grid-tree-toggle.js';
+import '@datadobi/grid/src/vaadin-grid.js';
+import '@datadobi/grid/src/vaadin-grid-column.js';
+import '@datadobi/grid/src/vaadin-grid-tree-toggle.js';
 
 class GridOnClientAndSlot extends PolymerElement {
 
