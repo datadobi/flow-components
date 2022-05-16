@@ -9,7 +9,7 @@
     <artifactId>vaadin-grid-flow</artifactId>
     <packaging>jar</packaging>
     <name>Vaadin Grid</name>
-    <version>23.0.9-datadobi4</version>
+    <version>23.0.9-datadobi5</version>
     <dependencies>
         <dependency>
             <groupId>com.vaadin</groupId>
