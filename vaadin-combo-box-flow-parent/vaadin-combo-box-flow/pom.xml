@@ -7,13 +7,14 @@
         <version>23.2-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-combo-box-flow</artifactId>
+    <version>23.2.8-datadobi2</version>
     <packaging>jar</packaging>
     <name>Vaadin Combo Box</name>
     <dependencies>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-flow-components-base</artifactId>
-            <version>${project.version}</version>
+            <version>23.2.8</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -50,13 +51,13 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-flow-components-test-util</artifactId>
-            <version>${project.version}</version>
+            <version>23.2.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-renderer-flow</artifactId>
-            <version>${project.version}</version>
+            <version>23.2.8</version>
         </dependency>
     </dependencies>
     <build>
