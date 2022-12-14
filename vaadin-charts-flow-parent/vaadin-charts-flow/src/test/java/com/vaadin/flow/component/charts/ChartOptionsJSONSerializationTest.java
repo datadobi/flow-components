@@ -13,6 +13,7 @@ import org.mockito.Mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.charts.model.Global;
 import com.vaadin.flow.component.charts.model.Lang;
 import com.vaadin.flow.component.charts.util.ChartSerialization;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -83,5 +84,35 @@ public class ChartOptionsJSONSerializationTest {
         ChartOptions chartOptions = om.readValue(json, ChartOptions.class);
 
         Assert.assertArrayEquals(fiDays, chartOptions.getLang().getWeekdays());
+    }
+
+    @Test
+    public void toJSON_GlobalWithoutUTC()
+            throws IOException {
+        final Global noUTC = new Global();
+        noUTC.setUseUTC(false);
+
+        options.setGlobal(noUTC);
+        String json = toJSON(options);
+
+        ObjectMapper om = ChartSerialization.createObjectMapper();
+        ChartOptions chartOptions = om.readValue(json, ChartOptions.class);
+
+        Assert.assertFalse(chartOptions.getGlobal().getUseUTC());
+    }
+
+    @Test
+    public void toJSON_GlobalWithUTC()
+            throws IOException {
+        final Global withUTC = new Global();
+        withUTC.setUseUTC(true);
+
+        options.setGlobal(withUTC);
+        String json = toJSON(options);
+
+        ObjectMapper om = ChartSerialization.createObjectMapper();
+        ChartOptions chartOptions = om.readValue(json, ChartOptions.class);
+
+        Assert.assertTrue(chartOptions.getGlobal().getUseUTC());
     }
 }
